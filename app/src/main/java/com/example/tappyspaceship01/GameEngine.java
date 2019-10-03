@@ -47,7 +47,19 @@ public class GameEngine extends SurfaceView implements Runnable {
     // ## SPRITES
     // ----------------------------
 
-    Dinosaurs dinosaurs;
+    int playerXPosition; //here player is dinosaur
+    int playerYPosition;
+    Bitmap playerImage;
+    Rect playerHitbox;
+
+    Bitmap candyImage;
+    Rect candyHitbox;
+    Bitmap garbageImage;
+    Rect garbageHitbox;
+    Bitmap rainbowImage;
+    Rect rainbowHitbox;
+
+//    Dinosaurs dinosaurs;
 //    Rainbows rainbows;
 //    Candy candy;
 //    Garbage garbage;
@@ -78,6 +90,11 @@ public class GameEngine extends SurfaceView implements Runnable {
     }
 
 
+//    @Override
+//    public void onDraw(Canvas canvas) {
+//        canvas.drawLine(0,0,20,20,paintbrush);
+//        canvas.drawLine(20,0,0,20,paintbrush);
+//    }
 
     private void printScreenInfo() {
 
@@ -86,7 +103,7 @@ public class GameEngine extends SurfaceView implements Runnable {
 
     private void spawnPlayer() {
         //@TODO: Start the player at the left side of screen
-        dinosaurs = new Dinosaurs(this.getContext(),100 ,100);
+//        dinosaurs = new Dinosaurs(this.getContext(),100 ,100);
     }
     private void spawnEnemyShips() {
         Random random = new Random();
@@ -129,8 +146,17 @@ public class GameEngine extends SurfaceView implements Runnable {
     // - update, draw, setFPS
     // ------------------------------
 
+
+    String directionBallIsMoving = "down";
+    String personTapped="";
+
     public void updatePositions() {
+
     }
+
+//    if(this.fingerAction == "mousedown") {
+//        this.pla
+//    }
 
     public void redrawSprites() {
         if (this.holder.getSurface().isValid()) {
@@ -143,6 +169,12 @@ public class GameEngine extends SurfaceView implements Runnable {
             paintbrush.setColor(Color.WHITE);
 
 
+            //drawing the line
+            this.canvas.drawLine(50,0,150,0,paintbrush);
+            this.canvas.drawLine(50,50,150,50,paintbrush);
+            this.canvas.drawLine(50,100,150,100,paintbrush);
+            this.canvas.drawLine(50,150,150,150,paintbrush);
+
             // DRAW THE PLAYER HITBOX
             // ------------------------
             // 1. change the paintbrush settings so we can see the hitbox
@@ -152,6 +184,14 @@ public class GameEngine extends SurfaceView implements Runnable {
 
             //----------------
             this.holder.unlockCanvasAndPost(canvas);
+
+            //life label
+            paintbrush.setTextSize(60);
+            canvas.drawText("lives " + this.lives, 50, 50,paintbrush);
+
+            //score label
+            paintbrush.setTextSize(45);
+            canvas.drawText("score" + this.score, 80,50,paintbrush);
         }
     }
 
@@ -176,9 +216,31 @@ public class GameEngine extends SurfaceView implements Runnable {
         int userAction = event.getActionMasked();
         //@TODO: What should happen when person touches the screen?
         if (userAction == MotionEvent.ACTION_DOWN) {
+            // user pushed down on screen
 
+            // 1. Get position of tap
+            float fingerXPosition = event.getX();
+            float fingerYPosition = event.getY();
+            Log.d(TAG, "Person's pressed: "
+                    + fingerXPosition + ","
+                    + fingerYPosition);
+
+
+            // 2. Compare position of tap to middle of screen
+            int middleOfScreen = this.screenWidth / 2;
+            if (fingerXPosition <= middleOfScreen) {
+                // 3. If tap is on upside of screen, player should go up
+                personTapped = "up";
+            }
+            else if (fingerXPosition > middleOfScreen) {
+                // 4. If tap is on down, player should go dowm
+                personTapped = "down";
+            }
         }
+
+
         else if (userAction == MotionEvent.ACTION_UP) {
+
 
         }
 
